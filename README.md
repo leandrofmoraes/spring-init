@@ -1,6 +1,4 @@
 # Spring Boot Initializer Script (spring-init)
-https://img.shields.io/badge/Shell_Script-%2523121011.svg?style=for-the-badge&logo=gnu-bash&logoColor=white
-https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring&logoColor=white
 
 ## Description 📖
 A command-line utility that simplifies Spring Boot project setup by interacting with Spring Initializr's API. This script guides you through project configuration and dependency selection, then generates and sets up your project.
