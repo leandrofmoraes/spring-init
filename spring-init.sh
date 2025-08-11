@@ -144,10 +144,13 @@ set_java_version(){
 # Function: Prompt user to set or review Spring Boot version
 set_boot_version() {
   local mode="${1:-initial}"
+  local boot_names boot_ids
 
-  # Load available Spring Boot IDs and names
-  readarray -t boot_ids < <(jq -r '.bootVersion.values[].id' <<<"$METADATA")
-  readarray -t boot_names < <(jq -r '.bootVersion.values[].name' <<<"$METADATA")
+  # Load available Spring Boot IDs and names (version names and IDs are swapped)
+  readarray -t boot_ids < <(jq -r '.bootVersion.values[].name' <<<"$METADATA")
+  readarray -t boot_names < <(jq -r '.bootVersion.values[].id' <<<"$METADATA")
+
+  local default=$(jq -r '.bootVersion.default' <<<"$METADATA")
 
   echo "Choose Spring Boot version:"
   for i in "${!boot_names[@]}"; do
@@ -163,14 +166,15 @@ set_boot_version() {
     fi
 
     # Validate input
-    if [[ "$bid" =~ ^[0-9]+$ ]] && (( bid >= 1 && bid <= ${#boot_ids[@]} )); then
+    if [[ "$bid" =~ ^[0-9]+$ ]] && (( bid >= 1 && bid <= ${#boot_names[@]} )); then
       break
     else
       echo "Invalid index! Select between 1 and ${#boot_names[@]}"
     fi
   done
   # Set Boot version with fallback to default
-  BOOT_VERSION="${boot_ids[$((bid-1))]:-$(jq -r '.bootVersion.default' <<<"$METADATA")}"
+  selected_id=$((bid-1))
+  BOOT_VERSION="${boot_ids[selected_id]:-$default}"
 }
 
 # Function: Prompt user to set or review project description
